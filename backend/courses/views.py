@@ -14,6 +14,7 @@ from .models import AcademicSession, Course, CourseAllocation, Timetable, Enroll
 from .serializers import (
     AcademicSessionSerializer, CourseSerializer, CourseAllocationSerializer,
     TimetableSerializer, EnrollmentSerializer, CourseMaterialSerializer,
+    AvailableAllocationSerializer,
 )
 
 
@@ -114,6 +115,28 @@ class LecturerAllocationListView(APIView):
         return Response(CourseAllocationSerializer(qs, many=True).data)
 
 
+class AvailableAllocationsView(APIView):
+    """GET /api/courses/available/  — allocations in the current session a student can enroll in."""
+    permission_classes = [IsActiveStudent]
+
+    def get(self, request):
+        try:
+            session = AcademicSession.objects.get(is_current=True)
+        except AcademicSession.DoesNotExist:
+            return Response([])
+        qs = CourseAllocation.objects.filter(session=session).select_related(
+            "course", "session", "lecturer__user"
+        )
+        enrolled_allocation_ids = set(
+            Enrollment.objects.filter(student=request.user.student_profile)
+            .values_list("allocation_id", flat=True)
+        )
+        serializer = AvailableAllocationSerializer(
+            qs, many=True, context={"enrolled_allocation_ids": enrolled_allocation_ids}
+        )
+        return Response(serializer.data)
+
+
 class MaterialUploadView(APIView):
     permission_classes = [IsActiveLecturer]
     parser_classes = [MultiPartParser, FormParser]
@@ -188,6 +211,26 @@ class AdminAllocateCourseView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=400)
+
+
+class AdminAllocationListView(APIView):
+    """GET /api/courses/admin/allocations/  — all allocations, optional ?session=<id> filter.
+    Defaults to the current academic session when no filter is given.
+    """
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+        session_param = request.query_params.get("session")
+        qs = CourseAllocation.objects.select_related("course", "session", "lecturer__user")
+        if session_param:
+            qs = qs.filter(session_id=session_param)
+        else:
+            try:
+                current = AcademicSession.objects.get(is_current=True)
+                qs = qs.filter(session=current)
+            except AcademicSession.DoesNotExist:
+                pass
+        return Response(CourseAllocationSerializer(qs, many=True).data)
 
 
 class AdminTimetableCreateView(APIView):

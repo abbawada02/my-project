@@ -91,7 +91,7 @@ export default function StudentDashboard() {
           {profile?.programme === "PHD" && (
             <Link to="/student/apr" className="btn btn-outline-secondary btn-sm">Annual Progress Report</Link>
           )}
-          <Link to="/student/courses" className="btn btn-outline-secondary btn-sm">Enroll in Courses</Link>
+          <Link to="/student/enroll" className="btn btn-outline-secondary btn-sm">Enroll in Courses</Link>
         </div>
       </div>
     </div>

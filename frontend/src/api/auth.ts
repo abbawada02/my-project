@@ -21,6 +21,11 @@ export const registerLecturer = (data: Record<string, unknown>) =>
 export const getPendingStudents = () =>
   api.get<StudentProfile[]>("/accounts/admin/students/pending/");
 
+export const getAllStudents = (statusFilter?: string) =>
+  api.get<StudentProfile[]>("/accounts/admin/students/", {
+    params: statusFilter ? { status: statusFilter } : {},
+  });
+
 export const updateStudent = (pk: number, data: Record<string, unknown>) =>
   api.patch<StudentProfile>(`/accounts/admin/students/${pk}/`, data);
 
@@ -29,6 +34,11 @@ export const approveStudent = (pk: number, action: "approve" | "reject") =>
 
 export const getPendingLecturers = () =>
   api.get<LecturerProfile[]>("/accounts/admin/lecturers/pending/");
+
+export const getAllLecturers = (statusFilter?: string) =>
+  api.get<LecturerProfile[]>("/accounts/admin/lecturers/", {
+    params: statusFilter ? { status: statusFilter } : {},
+  });
 
 export const updateLecturer = (pk: number, data: Record<string, unknown>) =>
   api.patch<LecturerProfile>(`/accounts/admin/lecturers/${pk}/`, data);

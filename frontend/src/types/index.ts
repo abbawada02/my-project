@@ -92,6 +92,20 @@ export interface CourseAllocation {
   semester: Semester;
 }
 
+export interface AvailableAllocation {
+  id: number;
+  course: number;
+  course_code: string;
+  course_title: string;
+  credit_units: number;
+  lecturer: number;
+  lecturer_name: string;
+  session: number;
+  session_name: string;
+  semester: Semester;
+  already_enrolled: boolean;
+}
+
 export interface TimetableEntry {
   id: number;
   allocation: number;
@@ -105,6 +119,8 @@ export interface TimetableEntry {
 export interface Enrollment {
   id: number;
   student: number;
+  student_name: string;
+  matric_number: string;
   allocation: number;
   course_code: string;
   course_title: string;

@@ -11,9 +11,14 @@ import LecturerDashboard from "./pages/lecturer/LecturerDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminStudentsPage from "./pages/admin/AdminStudentsPage";
 import AdminLecturersPage from "./pages/admin/AdminLecturersPage";
+import AdminAllStudentsPage from "./pages/admin/AdminAllStudentsPage";
+import AdminAllLecturersPage from "./pages/admin/AdminAllLecturersPage";
+import AdminCourseAllocationPage from "./pages/admin/AdminCourseAllocationPage";
+import AdminEnrollmentsPage from "./pages/admin/AdminEnrollmentsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import LecturerMaterialsPage from "./pages/lecturer/LecturerMaterialsPage";
 import StudentCoursesPage from "./pages/student/StudentCoursesPage";
+import StudentEnrollPage from "./pages/student/StudentEnrollPage";
 import LecturerResultsUploadPage from "./pages/lecturer/LecturerResultsUploadPage";
 import StudentResultsPage from "./pages/student/StudentResultsPage";
 import LecturerAllocationsPage from "./pages/lecturer/LecturerAllocationsPage";
@@ -49,6 +54,7 @@ export default function App() {
           <Route element={<ProtectedRoute allowedRoles={["STUDENT"]} />}>
             <Route path="/student/dashboard" element={<StudentDashboard />} />
             <Route path="/student/courses" element={<StudentCoursesPage />} />
+            <Route path="/student/enroll" element={<StudentEnrollPage />} />
             <Route path="/student/results" element={<StudentResultsPage />} />
             <Route path="/student/gpa" element={<StudentResultsPage />} />
           </Route>
@@ -65,7 +71,11 @@ export default function App() {
           <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/students" element={<AdminStudentsPage />} />
+            <Route path="/admin/students/all" element={<AdminAllStudentsPage />} />
             <Route path="/admin/lecturers" element={<AdminLecturersPage />} />
+            <Route path="/admin/lecturers/all" element={<AdminAllLecturersPage />} />
+            <Route path="/admin/courses" element={<AdminCourseAllocationPage />} />
+            <Route path="/admin/enrollments" element={<AdminEnrollmentsPage />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

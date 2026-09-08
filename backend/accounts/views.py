@@ -132,6 +132,19 @@ class LecturerRegisterView(APIView):
         )
 
 
+class AllStudentsView(APIView):
+    """GET /api/accounts/admin/students/  — all students, optional ?status=ACTIVE filter."""
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+        qs = StudentProfile.objects.select_related('user').all()
+        status_param = request.query_params.get('status')
+        if status_param:
+            qs = qs.filter(status=status_param.upper())
+        serializer = StudentProfileSerializer(qs, many=True)
+        return Response(serializer.data)
+
+
 class PendingStudentsView(APIView):
     """GET /api/accounts/admin/students/pending/"""
     permission_classes = [IsAdmin]
@@ -191,6 +204,19 @@ class ApproveStudentView(APIView):
             return Response({'detail': 'Student rejected.'})
         return Response({'detail': 'Invalid action. Use approve or reject.'},
                         status=status.HTTP_400_BAD_REQUEST)
+
+
+class AllLecturersView(APIView):
+    """GET /api/accounts/admin/lecturers/  — all lecturers, optional ?status=ACTIVE filter."""
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+        qs = LecturerProfile.objects.select_related('user').all()
+        status_param = request.query_params.get('status')
+        if status_param:
+            qs = qs.filter(status=status_param.upper())
+        serializer = LecturerProfileSerializer(qs, many=True)
+        return Response(serializer.data)
 
 
 class PendingLecturersView(APIView):
