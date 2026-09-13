@@ -15,6 +15,7 @@ import AdminAllStudentsPage from "./pages/admin/AdminAllStudentsPage";
 import AdminAllLecturersPage from "./pages/admin/AdminAllLecturersPage";
 import AdminCourseAllocationPage from "./pages/admin/AdminCourseAllocationPage";
 import AdminEnrollmentsPage from "./pages/admin/AdminEnrollmentsPage";
+import AdminResultsPage from "./pages/admin/AdminResultsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import LecturerMaterialsPage from "./pages/lecturer/LecturerMaterialsPage";
 import StudentCoursesPage from "./pages/student/StudentCoursesPage";
@@ -76,6 +77,7 @@ export default function App() {
             <Route path="/admin/lecturers/all" element={<AdminAllLecturersPage />} />
             <Route path="/admin/courses" element={<AdminCourseAllocationPage />} />
             <Route path="/admin/enrollments" element={<AdminEnrollmentsPage />} />
+            <Route path="/admin/results" element={<AdminResultsPage />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

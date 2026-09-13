@@ -7,6 +7,22 @@ export type Semester = "FIRST" | "SECOND";
 export type PaymentMethod = "ONLINE" | "MANUAL";
 export type PaymentStatus = "PENDING" | "APPROVED" | "REJECTED";
 export type ResultBatchStatus = "PENDING" | "APPROVED" | "REJECTED";
+export interface ResultBatchCourseProgress {
+  allocation: number;
+  course_code: string;
+  course_title: string;
+  lecturer: string;
+  lecturer_email: string;
+  submitted: boolean;
+  result_count: number;
+}
+
+export interface ResultBatchProgress {
+  expected_course_count: number;
+  submitted_course_count: number;
+  missing_course_count: number;
+  courses: ResultBatchCourseProgress[];
+}
 export type APRStatus =
   | "DRAFT"
   | "SUBMITTED"
@@ -85,11 +101,13 @@ export interface CourseAllocation {
   course: number;
   course_code: string;
   course_title: string;
+  credit_units: number;
   lecturer: number;
   lecturer_name: string;
   session: number;
   session_name: string;
   semester: Semester;
+  enrolled_count: number;
 }
 
 export interface AvailableAllocation {
@@ -168,6 +186,7 @@ export interface SemesterResultBatch {
   approved_by: number | null;
   approved_by_name: string | null;
   created_at: string;
+  progress: ResultBatchProgress;
 }
 
 export interface SemesterGPA {
