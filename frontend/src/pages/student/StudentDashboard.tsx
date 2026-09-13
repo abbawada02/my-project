@@ -7,11 +7,11 @@ import { getMyEnrollments } from "../../api/courses";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import type { GPAResponse, FeePayment, Enrollment, StudentProfile } from "../../types";
 
-function CGPABadge({ cgpa }: { cgpa: string | undefined }) {
+function CGPABadge({ cgpa, classification }: { cgpa: string | undefined; classification?: string }) {
   if (!cgpa) return <span className="text-muted">—</span>;
   const val = parseFloat(cgpa);
-  const cls = val >= 4.5 ? "success" : val >= 3.5 ? "info" : val >= 2.5 ? "warning" : "danger";
-  const label = val >= 4.5 ? "Distinction" : val >= 3.5 ? "Merit" : val >= 2.5 ? "Pass" : "Fail";
+  const cls = val >= 4.5 ? "success" : val >= 3.5 ? "info" : val >= 2.4 ? "primary" : val >= 1.5 ? "warning" : val >= 1.0 ? "secondary" : "danger";
+  const label = classification || (val >= 4.5 ? "First Class" : val >= 3.5 ? "Second Class Upper" : val >= 2.4 ? "Second Class Lower" : val >= 1.5 ? "Third Class" : val >= 1.0 ? "Pass" : "Fail");
   return (
     <span className={`badge bg-${cls} fs-6`}>
       {val.toFixed(2)} — {label}
@@ -50,7 +50,7 @@ export default function StudentDashboard() {
           <div className="card border-0 shadow-sm h-100">
             <div className="card-body">
               <h6 className="text-muted">CGPA</h6>
-              <CGPABadge cgpa={gpa?.cumulative?.cgpa} />
+              <CGPABadge cgpa={gpa?.cumulative?.cgpa} classification={gpa?.cumulative?.classification} />
               <div className="mt-2">
                 <Link to="/student/gpa" className="btn btn-sm btn-outline-primary">View GPA →</Link>
               </div>

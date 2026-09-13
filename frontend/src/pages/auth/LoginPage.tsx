@@ -37,7 +37,7 @@ export default function LoginPage() {
             <div className="card shadow-sm border-0">
               <div className="card-body p-4">
                 <div className="text-center mb-4">
-                  <h3 className="fw-bold text-primary">KUST CS PGMS</h3>
+                  <h3 className="fw-bold text-primary">ADUST CS PGMS</h3>
                   <p className="text-muted small">Postgraduate Management System</p>
                 </div>
                 <Alert message={error} />

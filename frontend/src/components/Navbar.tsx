@@ -54,7 +54,7 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container">
-        <Link className="navbar-brand fw-bold" to="/">KUST CS PGMS</Link>
+        <Link className="navbar-brand fw-bold" to="/">ADUST CS PGMS</Link>
         <button className="navbar-toggler" type="button"
           data-bs-toggle="collapse" data-bs-target="#navMain"
           aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">

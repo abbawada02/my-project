@@ -16,6 +16,7 @@ from courses.models import Enrollment, CourseAllocation
 from notifications.utils import notify
 from .models import SemesterResultBatch, Result, SemesterGPA, CumulativeGPA
 from .signals import recompute_gpa_for_batch
+from .services import get_batch_progress
 from .serializers import (
     ResultSerializer, ResultUploadSerializer, SemesterResultBatchSerializer,
     SemesterGPASerializer, CumulativeGPASerializer,
@@ -79,6 +80,23 @@ class LecturerResultUploadView(APIView):
 
         if batch.status == SemesterResultBatch.Status.APPROVED:
             return Response({"detail": "Cannot modify an approved batch."}, status=400)
+
+        for item in results_data:
+            try:
+                enrollment = Enrollment.objects.select_related(
+                    "allocation__course__programme", "allocation__session"
+                ).get(pk=item["enrollment"])
+            except (KeyError, TypeError, Enrollment.DoesNotExist):
+                continue
+            allocation = enrollment.allocation
+            if allocation.lecturer_id != request.user.lecturer_profile.id:
+                return Response({"detail": "You can only upload results for your own allocation."}, status=403)
+            if not (
+                allocation.session_id == batch.session_id
+                and allocation.semester == batch.semester
+                and allocation.course.programme.programme_type == batch.programme_type
+            ):
+                return Response({"detail": "The enrollment does not belong to this result batch."}, status=400)
 
         errors = []
         created = 0
@@ -207,6 +225,22 @@ class LecturerResultExcelUploadView(APIView):
         except Exception:
             return Response({"detail": "Could not read the Excel file. Is it a valid .xlsx?"}, status=400)
         ws = wb.active
+
+        metadata = [str(ws.cell(row=row, column=1).value or "").strip() for row in range(1, 9)]
+        if not any(course_code in line for line in metadata for course_code in [allocation.course.code]):
+            return Response({
+                "detail": f"Wrong course in score sheet. Expected course {allocation.course.code}."
+            }, status=400)
+        session_line = next((line for line in metadata if line.lower().startswith("session:")), "")
+        if allocation.session.name not in session_line:
+            return Response({
+                "detail": f"Wrong academic session in score sheet. Expected {allocation.session.name}."
+            }, status=400)
+        semester_label = allocation.get_semester_display().lower()
+        if semester_label not in session_line.lower():
+            return Response({
+                "detail": f"Wrong semester in score sheet. Expected {allocation.get_semester_display()}."
+            }, status=400)
 
         # Locate the column-header row ("#", "Registration No.", "Name", "CA", "Exam")
         header_row = None
@@ -349,6 +383,13 @@ class ApproveBatchView(APIView):
         action = request.data.get("action")
         comment = request.data.get("comment", "")
         if action == "approve":
+            progress = get_batch_progress(batch)
+            missing = [course for course in progress["courses"] if not course["submitted"]]
+            if not progress["expected_course_count"] or missing:
+                return Response({
+                    "detail": "Cannot approve this batch until every allocated course has submitted results.",
+                    "progress": progress,
+                }, status=400)
             batch.status = SemesterResultBatch.Status.APPROVED
             batch.coordinator_comment = comment
             batch.approved_at = timezone.now()
