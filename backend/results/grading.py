@@ -15,29 +15,35 @@ class GradingEngine:
         B  (60-69)  = 4 grade points
         C  (50-59)  = 3 grade points
         D  (45-49)  = 2 grade points
-        F  (0-44)   = 0 grade points
+        E  (40-44)  = 1 grade points
+        F  (0-39)   = 0 grade points
 
     CGPA Classification:
-        4.50 - 5.00 = Distinction
-        3.50 - 4.49 = Merit
-        2.50 - 3.49 = Pass
-        < 2.50      = Fail
+        4.50 - 5.00 = First Class
+        3.50 - 4.49 = Second Class Upper
+        2.40 - 3.49 = Second Class Lower
+        1.50 - 2.39 = Third Class
+        1.00 - 1.49 = Pass
+        0.00 - 0.99 = Fail
     """
 
     GRADE_SCALE = [
-        ('A', 70, 100, 5),
-        ('B', 60, 69,  4),
-        ('C', 50, 59,  3),
-        ('D', 45, 49,  2),
-        ('F',  0, 44,  0),
-    ]
+    ('A', 70, 100, 5),
+    ('B', 60, 69,  4),
+    ('C', 50, 59,  3),
+    ('D', 45, 49,  2),
+    ('E', 40, 44,  1),
+    ('F', 0, 39,   0),
+]
 
     CLASSIFICATION_SCALE = [
-        ('Distinction', Decimal('4.50'), Decimal('5.00')),
-        ('Merit',       Decimal('3.50'), Decimal('4.49')),
-        ('Pass',        Decimal('2.50'), Decimal('3.49')),
-        ('Fail',        Decimal('0.00'), Decimal('2.49')),
-    ]
+    ('First Class',        Decimal('4.50'), Decimal('5.00')),
+    ('Second Class Upper', Decimal('3.50'), Decimal('4.49')),
+    ('Second Class Lower', Decimal('2.40'), Decimal('3.49')),
+    ('Third Class',        Decimal('1.50'), Decimal('2.39')),
+    ('Pass',               Decimal('1.00'), Decimal('1.49')),
+    ('Fail',               Decimal('0.00'), Decimal('0.99')),
+]
 
     MINIMUM_CGPA = Decimal('2.50')
 
